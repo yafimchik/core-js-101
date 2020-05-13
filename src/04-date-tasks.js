@@ -19,8 +19,8 @@
  *    'Tue, 26 Jan 2016 13:48:02 GMT' => Date()
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
-function parseDataFromRfc2822(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromRfc2822(value) {
+  return new Date(value);
 }
 
 /**
@@ -34,8 +34,8 @@ function parseDataFromRfc2822(/* value */) {
  *    '2016-01-19T16:07:37+00:00'    => Date()
  *    '2016-01-19T08:07:37Z' => Date()
  */
-function parseDataFromIso8601(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromIso8601(value) {
+  return Date.parse(value);
 }
 
 
@@ -53,8 +53,9 @@ function parseDataFromIso8601(/* value */) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const y = date.getFullYear();
+  return (y % 400 === 0) || ((y % 4 === 0) && (y % 100 !== 0));
 }
 
 
@@ -73,8 +74,14 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const d = new Date(endDate - startDate);
+  const hh = (d.getUTCHours() < 10) ? `0${d.getUTCHours()}` : d.getUTCHours();
+  const mm = (d.getUTCMinutes() < 10) ? `0${d.getUTCMinutes()}` : d.getUTCMinutes();
+  const ss = (d.getUTCSeconds() < 10) ? `0${d.getUTCSeconds()}` : d.getUTCSeconds();
+  let sss = (d.getUTCMilliseconds() < 100) ? `0${d.getUTCMilliseconds()}` : `${d.getUTCMilliseconds()}`;
+  sss = (sss.length < 3) ? `0${sss}` : `${sss}`;
+  return `${hh}:${mm}:${ss}.${sss}`;
 }
 
 
@@ -94,8 +101,13 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  let h = (date.getUTCHours() % 12) * 60;
+  let m = date.getUTCMinutes();
+  h += m;
+  m *= 12;
+  const angle = Math.min(Math.abs(h - m), Math.abs(720 - h + m));
+  return (angle * Math.PI) / 360;
 }
 
 
